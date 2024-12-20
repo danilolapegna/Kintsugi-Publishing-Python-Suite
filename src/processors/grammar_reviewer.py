@@ -1,12 +1,12 @@
 from .base_processor import BaseProcessor
 
-class Reviewer(BaseProcessor):
+class GrammarReviewer(BaseProcessor):
 
     def __init__(self, client, severity, source_lang, target_lang):
         super().__init__(client, severity, source_lang, target_lang)
         self.base_prompt = (
-            "You are a reviewer. You will receive text and return grammatical "
-            "errors and how to fix them. If no such errors, please just"
+            "You are a reviewer. You will receive text and return, if present, a list of grammatical "
+            "errors, typos, inconsistencies, and a suggestino on how to fix each of them. If no such errors, please just"
             "return 'NO SERIOUS ERRORS HERE'."
         )
         

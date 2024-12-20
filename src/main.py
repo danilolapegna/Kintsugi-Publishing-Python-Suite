@@ -23,16 +23,16 @@ def parse_args():
     return args
 
 def load_processor_class(name):
-    if name == "Reviewer":
-        from processors.reviewer import Reviewer
-        return Reviewer
-    elif name == "ScientificReviewer":
+    if name == "ScientificReviewer":
         from processors.scientific_reviewer import ScientificReviewer
         return ScientificReviewer
     elif name == "Translator":
         from processors.translator import Translator
         return Translator
-    return None
+    # Reviewer as default processor
+    else:
+        from processors.grammar_reviewer import GrammarReviewer
+        return GrammarReviewer
 
 def main():
     args = parse_args()

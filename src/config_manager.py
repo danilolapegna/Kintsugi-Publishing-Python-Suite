@@ -3,9 +3,12 @@ import os
 
 class ConfigManager:
     def __init__(self, config_path: str):
-        if not os.path.exists(config_path):
-            raise FileNotFoundError(config_path)
-        with open(config_path, 'r', encoding='utf-8') as file:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        base_dir = os.path.abspath(os.path.join(script_dir, '..'))
+        full_path = os.path.join(base_dir, config_path)
+        if not os.path.exists(full_path):
+            raise FileNotFoundError(full_path)
+        with open(full_path, 'r', encoding='utf-8') as file:
             self._config = yaml.safe_load(file) or {}
 
     def get(self, key: str, default=None):
