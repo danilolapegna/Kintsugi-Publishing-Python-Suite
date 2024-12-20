@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+
+"""
+A client wrapper for OpenAI's API to handle chat-based completions.
+
+- Supports retry logic for API calls with configurable maximum retries.
+- Allows interaction via system and user prompts.
+- Handles errors and logs failures for debugging.
+"""
+
 import openai
 import logging
 

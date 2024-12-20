@@ -13,11 +13,15 @@ Note: this code can't AI-generate new books. I write all of my books myself. But
 This project uses OpenAI’s API for language tasks, supports configurable prompts, and offers a plugin-based architecture for maximum extensibility and flexibility.
 
 ## Features
-- Python + OpenAI-powered grammar reviewer, scientific reviewer, universal translator, and soon much more.
+- Python + OpenAI-powered grammar reviewer, scientific reviewer, universal translator, and soon much more: put your .docx or .txt in the input folder, choose the functionality, and the script will send those documents, in sequence, to OpenAI for translation, review or anything you like.
 - Supports multiple document formats (DOCX, TXT, MD).
 - Customizable configuration via `config.yaml` or CLI arguments.
 - Plugin-based architecture: easily add new functionalities like analytics and such.
 - For all code geeks: Modularized code with clear separation of concerns.
+
+## A bit more detail on how it works, in case you're interested
+
+The script processes documents (Word, text, or Markdown) by breaking them into meaningful sections based on headings or content. Each section is then sent to OpenAI, where it can be translated, improved, or analyzed according to the chosen functionality. Finally, each result is appended and saved into a txt file or embedded into a new .docx file (functionality in development). Short, uninformative sections are also automatically merged to ensure each request is substantial enough for the model.
 
 ## Usage
 
@@ -64,3 +68,8 @@ Override default heading styles directly from the CLI:
    ```bash
    python src/main.py --heading-styles "Heading 1" "Title"
    ```
+
+## Future features and improvements
+
+- Complete the in-docx processor
+- The fact that processors are all a bit different from each other may defy the need for such inheritance, but this can be refactored later

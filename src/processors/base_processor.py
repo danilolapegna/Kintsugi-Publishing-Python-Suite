@@ -1,3 +1,14 @@
+#!/usr/bin/env python3
+
+"""
+BaseProcessor class provides a generic framework for processing document sections.
+
+- Handles API client interactions and processes sections with custom prompts.
+- Supports postprocessing of API responses and mapping results back to original content.
+- Includes utilities for generating updated `.docx` files by replacing text in original documents.
+- Intended to be extended by specific processors like translators or reviewers.
+"""
+
 import os
 import copy
 from docx import Document

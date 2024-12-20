@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+
+"""
+This script processes documents by applying tasks like grammar reviews, translations, or reports 
+using modular processors and OpenAI's API. It scans documents from an input directory, processes 
+sections based on a YAML configuration or CLI arguments, and generates output in text or Word format. 
+Supports customization for heading styles, languages, and output formats.
+"""
+
 import argparse
 import logging
 import os
@@ -29,8 +38,11 @@ def load_processor_class(name):
     elif name == "Translator":
         from processors.translator import Translator
         return Translator
+    elif name == "Reporter":
+        from processors.reporter import Reporter
+        return Reporter
     # Reviewer as default processor
-    else:
+    elif name == "" or name == "Reviewer":
         from processors.grammar_reviewer import GrammarReviewer
         return GrammarReviewer
 

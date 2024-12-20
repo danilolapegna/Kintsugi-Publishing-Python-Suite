@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+
+"""
+ConfigManager handles loading, retrieving, and overriding values 
+from a YAML configuration file. It supports nested key access 
+using dot notation and allows runtime overrides.
+"""
+
 import yaml
 import os
 

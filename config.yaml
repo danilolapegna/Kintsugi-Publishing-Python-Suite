@@ -10,6 +10,13 @@ processing:
     - "Heading 2"
     - "Title"
   min_word_threshold: 2
+  
+  # Possible processors (can be overridden by CLI --processor):
+  # - Reviewer: Default grammar and style reviewer.
+  # - ScientificReviewer: Specialized reviewer focusing on verifying scientific content.
+  # - Translator: Translates from source_lang to target_lang.
+  # - Reporter: Generates informational summaries. No AI required.
+  processor: "Reviewer"
 
 io:
   input_directory: "./input_docs"

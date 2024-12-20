@@ -1,3 +1,14 @@
+#!/usr/bin/env python3
+
+"""
+Utility functions for file and directory operations.
+
+- `ensure_directory`: Ensures a directory exists; creates it if missing.
+- `find_documents`: Recursively searches for documents in a directory 
+  with specified extensions.
+- `load_text_file`: Loads the contents of a text file as a string.
+"""
+
 import os
 import logging
 from typing import List

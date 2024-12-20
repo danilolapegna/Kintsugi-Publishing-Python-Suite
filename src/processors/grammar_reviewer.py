@@ -1,3 +1,14 @@
+#!/usr/bin/env python3
+
+"""
+GrammarReviewer class for identifying grammatical errors, typos, and inconsistencies in text using OpenAI's API.
+
+- Provides suggestions for correcting identified issues.
+- Returns 'NO SERIOUS ERRORS HERE' if no significant problems are found.
+- Adjustable severity levels allow for varying strictness.
+- Inherits from BaseProcessor to ensure a consistent processing framework.
+"""
+
 from .base_processor import BaseProcessor
 
 class GrammarReviewer(BaseProcessor):

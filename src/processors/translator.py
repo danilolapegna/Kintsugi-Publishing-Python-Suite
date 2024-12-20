@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+
+"""
+Translator class for performing high-quality translations using OpenAI's API.
+
+- Ensures tone, style, and verbosity are adapted for the target language.
+- Leverages a customizable prompt for translation tasks.
+- Inherits from the BaseProcessor for consistent client interaction.
+"""
+
 from .base_processor import BaseProcessor
 
 class Translator(BaseProcessor):

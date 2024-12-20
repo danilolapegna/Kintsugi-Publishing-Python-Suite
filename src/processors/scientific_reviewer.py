@@ -1,3 +1,14 @@
+#!/usr/bin/env python3
+
+"""
+ScientificReviewer class for identifying factual and scientific errors in text using OpenAI's API.
+
+- Compares text against the highest-level academic research for accuracy.
+- Allows adjustable severity levels for leniency or strictness in reviews.
+- Returns 'NO FACTUAL ERRORS HERE' if no issues are found.
+- Inherits from BaseProcessor to maintain consistency across processors.
+"""
+
 from .base_processor import BaseProcessor
 
 class ScientificReviewer(BaseProcessor):

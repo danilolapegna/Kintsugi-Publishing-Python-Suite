@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+
+"""
+Parses documents into structured sections based on headings and content.
+
+- Supports `.docx` and plain text files.
+- Merges sections with low word count below a configurable threshold.
+- Customizable heading styles determine section boundaries.
+"""
+
 import os
 from docx import Document
 
