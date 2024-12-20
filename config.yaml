@@ -1,0 +1,20 @@
+openai:
+  api_key: "YOUR-OPENAI-API-KEY"
+  model: "gpt-4o" 
+  max_retries: 7
+
+processing:
+  # These represent the headings in a docx delimiting a section that will be sent for review or translation
+  heading_styles: 
+    - "Heading 1"
+    - "Heading 2"
+    - "Title"
+  min_word_threshold: 2
+
+io:
+  input_directory: "./input_docs"
+  output_directory: "./reviews"
+  supported_extensions: [".docx", ".txt", ".md"]
+
+logging:
+  level: "DEBUG"
