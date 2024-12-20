@@ -1,9 +1,9 @@
-# Kintsugi Publishing Analytics, Translating and Reviewing Tools
+# Kintsugi Project tech stack: Code for crafting and spread high-quality knowledge!
 
-This project I created served my self-publishing project. In fact its goal was provide me with a robust framework for reviewing, translating, and analyzing my writing in various formats, so that I could analyze, review, translate my books. And yeah, that means having additional tools for spreading high-quality knowledge. 
+This project I created served my self-publishing project. In fact its goal was provide me with a robust framework for reviewing, translating, and analyzing my writing in various formats, so that I could analyze, review, translate my books. And yeah, that means having additional tools for spreading high-quality knowledge on productivity, learning, lifehacking and personal development. 
 
 
-!(https://cdn.shopify.com/s/files/1/0273/6517/9457/files/Screenshot_2024-12-20_alle_17.36.17.png?v=1734712748)
+![Book images](https://cdn.shopify.com/s/files/1/0273/6517/9457/files/Screenshot_2024-12-20_alle_17.36.17.png?v=1734712748)
 [More info here](https://www.amazon.com/stores/Danilo-Lapegna/author/B0CGMF7CGG)
 
 This project uses OpenAI’s API for language tasks, supports configurable prompts, and offers a plugin-based architecture for maximum extensibility and flexibility.
@@ -20,6 +20,10 @@ This project uses OpenAI’s API for language tasks, supports configurable promp
 1. Install dependencies:
    ```bash
    pip install -r requirements.txt
+
+2. Remember to add your OpenAI Api Key in config.yaml where now you have YOUR-OPENAI-API-KEY
+
+3. Get ready to spread high-quality knowledge!
 
 ## Examples with using different processors
 

@@ -1,0 +1,71 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Cython debug symbols
+*.pyd
+*.so
+
+# Virtual environments
+.env/
+.venv/
+env/
+venv/
+ENV/
+*.virtualenv
+
+# Pip dependency file
+*.env
+*.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Setuptools distribution folder
+dist/
+build/
+*.egg-info/
+
+# PyInstaller
+*.spec
+
+# Django stuff:
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# VSCode settings
+.vscode/
+
+# macOS
+.DS_Store
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# pytest
+.cache/
+
+# Coverage
+.coverage
+*.cover
+coverage.xml
+htmlcov/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# PyCharm IDE
+.idea/
+
+# Other IDEs
+*.iml
+*.ipr
+*.iws

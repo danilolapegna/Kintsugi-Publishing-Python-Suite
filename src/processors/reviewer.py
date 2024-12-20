@@ -21,7 +21,7 @@ class Reviewer(BaseProcessor):
             4: "strict",
             5: "very strict"
         }
-        return f"{self.base_prompt}\nDo it with a severity: {sev_map.get(self.severity, 'normal')}"
+        return f"{self.base_prompt}\nDo it with a severity level that's {sev_map.get(self.severity, 'normal')}"
 
     def postprocess(self, response, section):
         if response.lower() == "no serious errors here":
