@@ -53,9 +53,9 @@ Use the Reviewer module, with low severity, use custom input/output directories,
    ```bash
    python src/main.py \
       --processor Reviewer \
-       --severity 1 \
-       --input-dir ./my_input_documents \
-       --output-dir ./my_review_results \
+      --severity 1 \
+      --input-dir ./my_input_documents \
+      --output-dir ./my_review_results \
       --output-format docx
    ```
 

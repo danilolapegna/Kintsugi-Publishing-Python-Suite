@@ -13,7 +13,7 @@ processing:
 
 io:
   input_directory: "./input_docs"
-  output_directory: "./reviews"
+  output_directory: "./outputs"
   supported_extensions: [".docx", ".txt", ".md"]
 
 logging:
