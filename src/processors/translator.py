@@ -11,8 +11,10 @@ Translator class for performing high-quality translations using OpenAI's API.
 from .base_openai_processor import BaseOpenAIProcessor
 
 class Translator(BaseOpenAIProcessor):
-    def __init__(self, client, severity, source_lang, target_lang):
-        super().__init__(client, severity, source_lang, target_lang)
+    def __init__(self, client, processor_parameters):
+        super().__init__(client, processor_parameters)
+        self.source_lang = processor_parameters['source_lang']
+        self.target_lang = processor_parameters['target_lang']
         self.base_prompt = (
             "You are a translator. Translate the given text from {src} to {tgt}. "
             "Do not add comments, only return the translated text."
@@ -20,6 +22,9 @@ class Translator(BaseOpenAIProcessor):
             "but the tone, verbosity and style is inferred from the original language and perfectly"
             "adapted into the destination language."
         )
+
+def output_suffix(self):
+    return f"translated_{self.source_lang}_{self.target_lang}"
 
 def build_prompt(self):
     return self.base_prompt.format(src=self.source_lang, tgt=self.target_lang)
