@@ -8,9 +8,9 @@ Translator class for performing high-quality translations using OpenAI's API.
 - Inherits from the BaseProcessor for consistent client interaction.
 """
 
-from .base_processor import BaseProcessor
+from .base_openai_processor import BaseOpenAIProcessor
 
-class Translator(BaseProcessor):
+class Translator(BaseOpenAIProcessor):
     def __init__(self, client, severity, source_lang, target_lang):
         super().__init__(client, severity, source_lang, target_lang)
         self.base_prompt = (

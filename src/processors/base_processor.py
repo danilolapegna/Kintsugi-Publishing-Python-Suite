@@ -3,10 +3,8 @@
 """
 BaseProcessor class provides a generic framework for processing document sections.
 
-- Handles API client interactions and processes sections with custom prompts.
-- Supports postprocessing of API responses and mapping results back to original content.
 - Includes utilities for generating updated `.docx` files by replacing text in original documents.
-- Intended to be extended by specific processors like translators or reviewers.
+- Intended to be extended by specific processors like reporters or reviewers.
 """
 
 import os
@@ -14,31 +12,22 @@ import copy
 from docx import Document
 
 class BaseProcessor:
-    def __init__(self, client, severity, source_lang, target_lang):
+    def __init__(self, client, processor_parameters):
         self.client = client
-        self.severity = severity
-        self.source_lang = source_lang
-        self.target_lang = target_lang
+        self.processor_parameters = processor_parameters
 
+    # Override this to declare sections processing logic
     def process_sections(self, sections):
-        results = []
-        for s in sections:
-            c = self.client.get_completion(self.build_prompt(), s["content"])
-            if c:
-                res = self.postprocess(c, s)
-                if res:
-                    results.append(res)
-        return results
+        return sections
 
-    def build_prompt(self):
-        return ''
-
+    # Override this to declare section postprocessing logic
     def postprocess(self, response, section):
         return response
 
     def output_suffix(self):
         return "processed"
 
+    # File utility to output a docx
     def generate_docx(self, original_path, sections, results, output_path):
         doc = Document(original_path)
         text_map = self.map_sections(sections, results)

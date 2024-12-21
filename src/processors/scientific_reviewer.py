@@ -9,11 +9,13 @@ ScientificReviewer class for identifying factual and scientific errors in text u
 - Inherits from BaseProcessor to maintain consistency across processors.
 """
 
-from .base_processor import BaseProcessor
+from .base_openai_processor import BaseOpenAIProcessor
 
-class ScientificReviewer(BaseProcessor):
-    def __init__(self, client, severity, source_lang, target_lang):
-        super().__init__(client, severity, source_lang, target_lang)
+class ScientificReviewer(BaseOpenAIProcessor):
+    def __init__(self, client, processor_parameters):
+        super().__init__(client, processor_parameters)
+        self.severity = min(max(processor_parameters['severity'], 1), 5)
+
         self.base_prompt = (
             "You are a scientific reviewer. You will receive text and return all the possible factual "
             "and scientific errors, and what's correc there. Make sure that's compared against the highest "

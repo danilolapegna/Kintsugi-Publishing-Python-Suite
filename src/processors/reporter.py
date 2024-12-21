@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+
+"""
+Reporter class for counting words, most used sentences and other writing utilities.
+
+- No external API interactions
+- Contains utilities for words count, pages estimations and more
+
+"""
+
 import re
 import string
 import math
@@ -5,8 +15,8 @@ from collections import Counter
 from .base_processor import BaseProcessor
 
 class Reporter(BaseProcessor):
-    def __init__(self, client, severity, source_lang, target_lang):
-        super().__init__(client, severity, source_lang, target_lang)
+    def __init__(self, client, processor_parameters):
+        super().__init__(client, processor_parameters)
         self.text = ""
 
     def output_suffix(self):
@@ -162,9 +172,6 @@ class Reporter(BaseProcessor):
     def _get_bigrams(self, words):
         # Return list of (word1, word2) bigrams
         return list(zip(words, words[1:]))
-
-    def build_prompt(self):
-        return ""
 
     def postprocess(self, response, section):
         return response

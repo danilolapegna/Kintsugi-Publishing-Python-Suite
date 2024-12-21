@@ -41,10 +41,15 @@ def load_processor_class(name):
     elif name == "Reporter":
         from processors.reporter import Reporter
         return Reporter
-    # Reviewer as default processor
-    elif name == "" or name == "Reviewer":
+    
+    # GrammarReviewer as default processor, but unrecognised processors will throw an error
+    elif name == "" or name == "GrammarReviewer":
+        if (name == ""):
+            print("No reviewer defined. Will default to Grammar reviewer")
         from processors.grammar_reviewer import GrammarReviewer
         return GrammarReviewer
+    else:
+        raise ValueError(f"Unrecognised processor type: {name}")
 
 def main():
     args = parse_args()
@@ -83,21 +88,25 @@ def main():
         min_word_threshold=config.get("processing.min_word_threshold", 2)
     )
 
+    processor_name = config.get("processing.processor", "Reviewer")
+    output_format = config.get("processing.output_format", "txt")
+
+    processor_parameters = {
+        'severity' : config.get("processing.severity", 3),
+        'source_lang' : config.get("processing.source_lang", "en"),
+        'target_lang' : config.get("processing.target_lang", "en")
+    }
+
     api_key = config.get("openai.api_key")
     model = config.get("openai.model")
     max_retries = config.get("openai.max_retries", 3)
-    processor_name = config.get("processing.processor", "Reviewer")
-    severity = config.get("processing.severity", 3)
-    source_lang = config.get("processing.source_lang", "en")
-    target_lang = config.get("processing.target_lang", "en")
-    output_format = config.get("processing.output_format", "txt")
 
     ProcessorClass = load_processor_class(processor_name)
     if not ProcessorClass:
         return
 
     client = OpenAIClient(api_key, model, max_retries)
-    processor = ProcessorClass(client, severity, source_lang, target_lang)
+    processor = ProcessorClass(client, processor_parameters)
 
     for doc_path in documents:
         sections = parser.parse_document(doc_path)
