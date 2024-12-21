@@ -1,5 +1,5 @@
 # Kintsugi Project AI tech stack
-## Code for crafting and spread high-quality knowledge
+## Code for crafting and spreading high-quality knowledge
 
 This project emerged from over a decade of self-publishing books on Amazon in multiple languages. Its purpose was to create a reliable AI-based framework for reviewing, translating, and analyzing my books across various formats. Quality has always been my top priority, and this system allowed me to ensure every book met the highest standards in clarity and precision.
 
