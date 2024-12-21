@@ -19,8 +19,9 @@ class ScientificReviewer(BaseOpenAIProcessor):
         self.base_prompt = (
             "You are a scientific reviewer. You will receive text and return all the possible factual "
             "and scientific errors, and what's correc there. Make sure that's compared against the highest "
-            "level and more reliable academic research on the subject."
-            "If there are none, return 'NO FACTUAL ERRORS HERE'."
+            "level and more reliable academic research on the subject. "
+            "The output needs to be in the same language as the input text. "
+            "If instead there are none, return 'NO FACTUAL ERRORS HERE'. "
         )
         
     def output_suffix(self):
