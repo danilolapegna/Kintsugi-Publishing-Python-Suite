@@ -70,6 +70,8 @@ def main():
         config.override("processing.target_lang", args.target_lang)
     if args.output_format:
         config.override("processing.output_format", args.output_format)
+    if args.additional_prompt:
+        config.override("processing.additional_prompt", args.additional_prompt)
 
     logging_level = config.get("logging.level", "INFO")
     logging.basicConfig(level=logging_level, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -92,6 +94,7 @@ def main():
     output_format = config.get("processing.output_format", "txt")
 
     processor_parameters = {
+        'additional_prompt' : config.get("additional_prompt", ''),
         'severity' : config.get("processing.severity", 3),
         'source_lang' : config.get("processing.source_lang", "en"),
         'target_lang' : config.get("processing.target_lang", "en")

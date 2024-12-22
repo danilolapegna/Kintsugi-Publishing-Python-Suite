@@ -15,6 +15,7 @@ class Translator(BaseOpenAIProcessor):
         super().__init__(client, processor_parameters)
         self.source_lang = processor_parameters['source_lang']
         self.target_lang = processor_parameters['target_lang']
+        
         self.base_prompt = (
             "You are a translator. Translate the given text from {src} to {tgt}. "
             "Do not add comments, only return the translated text. "

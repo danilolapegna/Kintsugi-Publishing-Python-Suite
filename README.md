@@ -19,9 +19,10 @@ This project uses OpenAI’s API for language tasks, supports configurable promp
 - Plugin-based architecture: easily add new functionalities like analytics and such.
 - For all code geeks: Modularized code with clear separation of concerns.
 
-## A bit more detail on how it works, in case you're interested
-
-The script processes documents (Word, text, or Markdown) by breaking them into meaningful sections based on headings or content. Each section is then sent to OpenAI, where it can be translated, improved, or analyzed according to the chosen functionality. Finally, each result is appended and saved into a txt file or embedded into a new .docx file (functionality in development). Short, uninformative sections are also automatically merged to ensure each request is substantial enough for the model.
+## How this works, in short
+- Take all documents in the input folder
+- Send each of them, one section at a time, to a processor class (usually an OpenAI api client) that will review/translate/summarise it.
+- Save the report for each document in a separate file or embedded into a new .docx file.
 
 ## Usage
 

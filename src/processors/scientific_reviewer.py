@@ -14,7 +14,7 @@ from .base_openai_processor import BaseOpenAIProcessor
 class ScientificReviewer(BaseOpenAIProcessor):
     def __init__(self, client, processor_parameters):
         super().__init__(client, processor_parameters)
-        self.severity = min(max(processor_parameters['severity'], 1), 5)
+        self.severity = min(max(processor_parameters.get('severity', 3), 1), 5)
 
         self.base_prompt = (
             "You are a scientific reviewer. You will receive text and return all the possible factual "

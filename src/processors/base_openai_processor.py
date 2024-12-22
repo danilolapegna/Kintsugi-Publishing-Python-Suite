@@ -16,11 +16,12 @@ from .base_processor import BaseProcessor
 class BaseOpenAIProcessor(BaseProcessor):
     def __init__(self, client, processor_parameters):
         super().__init__(client, processor_parameters)
-
+        self.additional_prompt = processor_parameters.get('additional_prompt', '')
+        
     def process_sections(self, sections):
         results = []
         for s in sections:
-            c = self.client.get_completion(self.build_prompt(), s["content"])
+            c = self.client.get_completion(f"{self.build_prompt()}. {self.additional_prompt}", s["content"])
             if c:
                 res = self.postprocess(c, s)
                 if res:
