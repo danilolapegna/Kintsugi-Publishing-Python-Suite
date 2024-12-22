@@ -16,6 +16,7 @@ processing:
   # - ScientificReviewer: Specialized reviewer focusing on verifying scientific content.
   # - Translator: Translates from source_lang to target_lang.
   # - Reporter: Generates informational summaries. No AI required.
+  # - CustomPromptProcessor: Processes the docuemnt vai any prompt that's defined via CLI.
   processor: "Reviewer"
 
 io:

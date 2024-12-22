@@ -23,6 +23,7 @@ def parse_args():
     parser.add_argument("--output-dir")
     parser.add_argument("--heading-styles", nargs="+")
     parser.add_argument("--prompt")
+    parser.add_argument("--additional-prompt")
     parser.add_argument("--processor")
     parser.add_argument("--severity", type=int)
     parser.add_argument("--source-lang")
@@ -41,6 +42,9 @@ def load_processor_class(name):
     elif name == "Reporter":
         from processors.reporter import Reporter
         return Reporter
+    elif name == "CustomPromptProcessor":
+        from processors.reporter import CustomPromptProcessor
+        return CustomPromptProcessor
     
     # GrammarReviewer as default processor, but unrecognised processors will throw an error
     elif name == "" or name == "GrammarReviewer":
@@ -94,6 +98,7 @@ def main():
     output_format = config.get("processing.output_format", "txt")
 
     processor_parameters = {
+        'prompt' : config.get("prompt", ''),
         'additional_prompt' : config.get("additional_prompt", ''),
         'severity' : config.get("processing.severity", 3),
         'source_lang' : config.get("processing.source_lang", "en"),
