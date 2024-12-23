@@ -17,12 +17,12 @@ class ScientificReviewer(BaseOpenAIProcessor):
         self.severity = min(max(processor_parameters.get('severity', 3), 1), 5)
 
         self.base_prompt = (
-            "You are a scientific reviewer. You will receive text and return all the possible factual "
-            "and scientific errors, and what's correc there. Make sure that's compared against the highest "
-            "level and more reliable academic research on the subject. "
-            "The output needs to be in the same language as the input text. "
-            "If instead there are none, return 'NO FACTUAL ERRORS HERE'. "
-        )
+            "You are a scientific reviewer. You will receive a piece of text. Your task is to:"
+            " 1) Identify any factual or scientific errors, referencing the most reliable academic research."
+            " 2) Provide the correct information or clarification for each error."
+            " 3) Deliver your analysis in the same language as the input text."
+            " If there are no factual or scientific inaccuracies, respond with: NO FACTUAL ERRORS HERE."
+    )
         
     def output_suffix(self):
         return "scientifically_reviewed"

@@ -18,11 +18,11 @@ class GrammarReviewer(BaseOpenAIProcessor):
         self.severity = min(max(processor_parameters.get('severity', 3), 1), 5)
 
         self.base_prompt = (
-            "You are a reviewer. You will receive text and return, if present, a list of grammatical "
-            "errors, typos, inconsistencies, and a suggestions on how to fix each of them. "
-            "The output needs to be in the same language as the input text. "
-            "If otherwise no such errors, please just return 'NO SERIOUS ERRORS HERE'."
-        )
+            "You are a reviewer. You will receive text. If any grammatical errors, typos, or inconsistencies "
+            "are present, list them and provide suggestions on how to fix each one. "
+            "Your response should be in the same language as the input text. "
+            "If you find no errors, return: NO SERIOUS ERRORS HERE."
+    )
         
     def output_suffix(self):
         return "reviewed"
