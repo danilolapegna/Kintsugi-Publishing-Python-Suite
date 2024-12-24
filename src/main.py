@@ -43,8 +43,11 @@ def load_processor_class(name):
     elif name == "Reporter":
         from processors.reporter import Reporter
         return Reporter
+    elif name == "Summariser":
+        from processors.summariser import Summariser
+        return Summariser
     elif name == "CustomPromptProcessor":
-        from processors.reporter import CustomPromptProcessor
+        from processors.custom_prompt_processor import CustomPromptProcessor
         return CustomPromptProcessor
     
     # GrammarReviewer as default processor, but unrecognised processors will throw an error
