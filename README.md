@@ -14,10 +14,9 @@ This project uses OpenAI’s API for language tasks, supports configurable promp
 
 ## Features
 - Python + OpenAI-powered grammar reviewer, scientific reviewer, universal translator, and soon much more: put your .docx or .txt in the input folder, choose the functionality, and the script will send those documents, in sequence, to OpenAI for translation, review or anything you like.
-- Supports multiple document formats (DOCX, TXT, MD).
+- Supports multiple document formats (DOCX, PDF, TXT, MD).
 - Customizable configuration via `config.yaml` or CLI arguments.
 - Plugin-based architecture: easily add new functionalities like analytics and such.
-- For all code geeks: Modularized code with clear separation of concerns.
 
 ## How this works, in short
 - Take all documents in the input folder
@@ -53,19 +52,8 @@ Output results in .docx format instead of .txt:
    python src/main.py --output-format docx
    ```
 
-Use the Reviewer module, with low severity, use custom input/output directories, and generate .docx output in order to do a grammatical review of all documents:
 
-   ```bash
-   python src/main.py \
-      --processor Reviewer \
-      --severity 1 \
-      --input-dir ./my_input_documents \
-      --output-dir ./my_review_results \
-      --output-format docx
-   ```
-
-
-Override default heading styles directly from the CLI:
+Override default heading styles (= what delimits a section in .docx files) directly from the CLI:
    ```bash
    python src/main.py --heading-styles "Heading 1" "Title"
    ```

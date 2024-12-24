@@ -7,6 +7,10 @@ ScientificReviewer class for identifying factual and scientific errors in text u
 - Allows adjustable severity levels for leniency or strictness in reviews.
 - Returns 'NO FACTUAL ERRORS HERE' if no issues are found.
 - Inherits from BaseProcessor to maintain consistency across processors.
+
+Needs to be augmented via additional, professional research and checks on sites
+like scite.ai or Pubmed.
+
 """
 
 from .base_openai_processor import BaseOpenAIProcessor

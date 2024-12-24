@@ -29,6 +29,7 @@ def parse_args():
     parser.add_argument("--source-lang")
     parser.add_argument("--target-lang")
     parser.add_argument("--output-format", choices=["txt","docx"])
+    parser.add_argument("--add-section-title")
     args = parser.parse_args()
     return args
 
@@ -76,22 +77,27 @@ def main():
         config.override("processing.output_format", args.output_format)
     if args.additional_prompt:
         config.override("processing.additional_prompt", args.additional_prompt)
+    if args.add_section_title:
+        config.override("processing.add_section_title", args.add_section_title)
 
     logging_level = config.get("logging.level", "INFO")
     logging.basicConfig(level=logging_level, format='%(asctime)s - %(levelname)s - %(message)s')
 
     input_dir = config.get("io.input_directory")
     output_dir = config.get("io.output_directory")
+
     ensure_directory(output_dir)
     supported_ext = config.get("io.supported_extensions", [".docx"])
 
     documents = find_documents(input_dir, supported_ext)
     if not documents:
+        print(f"No documents found in the input dir {input_dir}")
         return
 
     parser = DocumentParser(
         heading_styles=config.get("processing.heading_styles"),
         min_word_threshold=config.get("processing.min_word_threshold", 2)
+        add_section_title=config.get("processing.add_section_title", True)
     )
 
     processor_name = config.get("processing.processor", "Reviewer")

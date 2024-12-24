@@ -19,7 +19,7 @@ class GrammarReviewer(BaseOpenAIProcessor):
 
         self.base_prompt = (
             "You are a reviewer. You will receive text. If any grammatical errors, typos, or inconsistencies "
-            "are present, list them and provide suggestions on how to fix each one. "
+            "are present, list them and provide suggestions on how to fix each of them. "
             "Your response should be in the same language as the input text. "
             "If you find no errors, return: NO SERIOUS ERRORS HERE."
     )
