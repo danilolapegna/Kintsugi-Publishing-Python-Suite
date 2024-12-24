@@ -21,7 +21,7 @@ This project uses OpenAI’s API for language tasks, supports configurable promp
 ## How this works, in short
 - Take all documents in the input folder
 - Send each of them, one section at a time, to a processor class (usually an OpenAI api client) that will review/translate/summarise it.
-- Save the report for each document in a separate file or embedded into a new .docx file.
+- Save the report for each document in a separate file or embed the results into a new, entirely formatted .docx file (WIP functionality).
 
 ## Usage
 
@@ -60,5 +60,4 @@ Override default heading styles (= what delimits a section in .docx files) direc
 
 ## Future features and improvements
 
-- Complete the in-docx processor
-- The fact that processors are all a bit different from each other may defy the need for such inheritance, but this can be refactored later
+- Complete the in-docx embedded processor
