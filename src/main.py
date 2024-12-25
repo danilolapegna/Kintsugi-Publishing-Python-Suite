@@ -125,7 +125,8 @@ def main():
             docx_in_docx_mode = True
             user_confirmation = input(
                 "Both input and output are .docx for some files. Use docx in docx mode for those files?\n"
-                "This will recreate a .docx that's more similar to the original one, but will consume more API tokens (y/n): "
+                "If you select 'y' it will recreate a .docx that's more similar to the original one, but will consume more API tokens\n"
+                 "If you select 'n' it will process fewer sections but the .docx will lose its original formatting (y/n):" 
             )
             if user_confirmation.strip().lower() != 'y':
                 docx_in_docx_mode = False

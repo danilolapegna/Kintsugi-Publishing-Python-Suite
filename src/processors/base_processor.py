@@ -40,32 +40,34 @@ class BaseProcessor:
 
     def generate_docx_advanced_mode(self, original_path, sections, results, output_path):
         doc = Document(original_path)
+        results_by_id = {r["id"]: r for r in results}  # Create a mapping of results by ID
 
         if len(sections) != len(results):
             raise ValueError("Sections and results lengths do not match.")
 
-        for section, rendered_info in zip(sections, results):
-            if not isinstance(rendered_info, dict):
+        for section in sections:
+            rendered_info = results_by_id.get(section["id"])
+            if not rendered_info or not isinstance(rendered_info, dict):
                 continue
 
-            title = rendered_info.get('title', '').strip()
             content = rendered_info.get('content', '').strip()
             style_name = rendered_info.get('style_name', '').strip()
 
-            # Find the matching paragraph in the document by title
-            for paragraph in doc.paragraphs:
-                if paragraph.text.strip() == title:
+            # Find the matching paragraph in the document using the section ID
+            for idx, paragraph in enumerate(doc.paragraphs):
+                if idx == section["id"]:
                     # Save original styles and formatting
                     original_style = paragraph.style
-                    original_font_name = paragraph.runs[0].font.name if paragraph.runs else None
-                    original_font_size = paragraph.runs[0].font.size if paragraph.runs else None
-                    has_page_break = any(run._element.xpath('.//w:br[@w:type="page"]') for run in paragraph.runs)
+                    original_runs = paragraph.runs  # Save all runs to preserve formatting
+                    original_font_name = original_runs[0].font.name if original_runs else None
+                    original_font_size = original_runs[0].font.size if original_runs else None
+                    has_page_break = any(run._element.xpath('.//w:br[@w:type="page"]') for run in original_runs)
 
-                    # Clear existing content
-                    paragraph.clear()
+                    # Replace the text content only
                     if content:
+                        for run in original_runs:
+                            run.text = ''  
                         new_run = paragraph.add_run(content)
-                        # Apply the specified or original style
                         paragraph.style = style_name if style_name in [s.name for s in doc.styles] else original_style
 
                         # Restore original font settings
@@ -74,7 +76,8 @@ class BaseProcessor:
                         if original_font_size:
                             new_run.font.size = original_font_size
                     else:
-                        paragraph.text = ''
+                        for run in original_runs:
+                            run.text = ''
 
                     # Reapply page break if needed
                     if has_page_break:
@@ -84,6 +87,7 @@ class BaseProcessor:
                     break
 
         doc.save(output_path)
+
 
     def map_sections(self, sections, results):
         return {section["content"]: result for section, result in zip(sections, results)}

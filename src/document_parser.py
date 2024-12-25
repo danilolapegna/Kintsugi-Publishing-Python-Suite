@@ -107,6 +107,7 @@ class DocumentParser:
         sections = []
         for idx, paragraph in enumerate(document.paragraphs):
             sections.append({
+                "id": idx,  # Add unique identifier for each section
                 "title": f"Paragraph {idx+1}",
                 "content": paragraph.text,
                 "style_name": paragraph.style.name if paragraph.style else None
