@@ -13,6 +13,7 @@ Parses documents into structured sections based on headings and content.
 import os
 from docx import Document
 from PyPDF2 import PdfReader
+import tiktoken
 
 class DocumentParser:
     def __init__(self, heading_styles, min_word_threshold=2):
@@ -23,10 +24,13 @@ class DocumentParser:
         self.heading_styles = heading_styles
         self.min_word_threshold = min_word_threshold
 
-    def parse_document(self, file_path):
+    def parse_document(self, file_path, docx_in_docx_mode=False):
         ext = os.path.splitext(file_path)[1].lower()
         if ext == ".docx":
-            return self._parse_docx(file_path)
+            if docx_in_docx_mode:
+                return self._parse_docx_by_paragraph(file_path)
+            else:
+                return self._parse_docx(file_path)
         elif ext == ".pdf":
             return self._parse_pdf(file_path)
         else:
@@ -40,29 +44,43 @@ class DocumentParser:
             text = f.read().strip()
         if not text:
             return []
-        return [{"title": "Document", "content": text}]
-
+        sections = [{"title": "Document", "content": text}]
+        return self._split_sections_if_needed(sections)
+    
     def _parse_docx(self, file_path):
         """
-        Parses a DOCX file by headings, merging smaller sections below a threshold.
+        Parses a DOCX file by headings, ensuring titles merge with the following paragraphs
+        and including intro if no headings are present initially.
         """
         document = Document(file_path)
         paragraphs = document.paragraphs
 
         sections = []
         current_section = []
+        intro_section = []
+        is_intro = True
+
         for paragraph in paragraphs:
+            text = paragraph.text.strip()
+            if not text:
+                continue  # Skip empty paragraphs
+
             style_name = paragraph.style.name if paragraph.style else ""
-            if style_name in self.heading_styles:
+            if style_name in self.heading_styles:  # New section start
                 if current_section:
-                    sections.append(current_section)
-                current_section = [paragraph.text]
+                    sections.append(current_section)  
+                current_section = [text]  
+                is_intro = False
             else:
-                if current_section:
-                    current_section.append(paragraph.text)
+                if is_intro:
+                    intro_section.append(text) 
+                elif current_section:
+                    current_section.append(text)  
 
         if current_section:
             sections.append(current_section)
+        if intro_section:  
+            sections.insert(0, ["Introduction", *intro_section])  # Prepend intro section if it exists
 
         merged_sections = []
         i = 0
@@ -72,7 +90,7 @@ class DocumentParser:
             content = "\n".join(section[1:]).strip()
             word_count = len(content.split())
             j = i
-            
+
             while word_count < self.min_word_threshold and j + 1 < len(sections):
                 j += 1
                 next_sec = sections[j]
@@ -81,7 +99,19 @@ class DocumentParser:
 
             merged_sections.append({"title": title, "content": content})
             i = j + 1
-        return merged_sections
+
+        return self._split_sections_if_needed(merged_sections)
+
+    def _parse_docx_by_paragraph(self, file_path):
+        document = Document(file_path)
+        sections = []
+        for idx, paragraph in enumerate(document.paragraphs):
+            sections.append({
+                "title": f"Paragraph {idx+1}",
+                "content": paragraph.text,
+                "style_name": paragraph.style.name if paragraph.style else None
+            })
+        return sections
 
     def _parse_pdf(self, file_path):
         """
@@ -92,6 +122,58 @@ class DocumentParser:
 
         for i, page in enumerate(reader.pages):
             page_text = page.extract_text()
-            # Use "Page X" as title for each PDF page.
             sections.append({"title": f"PDF Page {i + 1}", "content": page_text or ""})
-        return sections
+        return self._split_sections_if_needed(sections)
+
+    def _split_sections_if_needed(self, sections):
+        """
+        Splits sections if their content exceeds the maximum token limit.
+        """
+        max_tokens = self._calculate_max_tokens()
+        split_sections = []
+
+        for section in sections:
+            content = section["content"].strip()
+            if self._calculate_tokens(content) > max_tokens:
+                split_sections.extend(self._smart_split(section))
+            else:
+                split_sections.append(section)
+
+        return split_sections
+
+    def _calculate_max_tokens(self):
+        """
+        Calculates the maximum reasonable tokens for one section.
+        """
+        return 7000  # TODO: dynamic logic depending on model type?
+
+    def _calculate_tokens(self, text):
+        """
+        Calculates the number of tokens in a given text.
+        """
+        encoding = tiktoken.encoding_for_model("gpt-4")
+        return len(encoding.encode(text))
+
+    def _smart_split(self, section):
+        """
+        Splits a section into smaller sections without breaking points or sentences.
+        """
+        max_tokens = self._calculate_max_tokens()
+        content = section["content"].strip()
+        title = section["title"]
+
+        sentences = content.split('.')
+        split_sections = []
+        current_chunk = ""
+
+        for sentence in sentences:
+            if self._calculate_tokens(current_chunk + sentence + '.') > max_tokens:
+                split_sections.append({"title": title, "content": current_chunk.strip()})
+                current_chunk = sentence + '.'
+            else:
+                current_chunk += sentence + '.'
+
+        if current_chunk:
+            split_sections.append({"title": title, "content": current_chunk.strip()})
+
+        return split_sections

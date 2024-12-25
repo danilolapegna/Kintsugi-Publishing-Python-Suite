@@ -11,6 +11,7 @@ src/__pycache__/
 # Virtual environments
 .env/
 .venv/
+myenv/
 env/
 venv/
 ENV/
@@ -44,10 +45,13 @@ db.sqlite3-journal
 # macOS
 .DS_Store
 
-# Temporary files
+# Temporary files and input/output folders
 *.swp
 *.swo
 *~
+input_docs/
+outputs/
+reviews/
 
 # pytest
 .cache/

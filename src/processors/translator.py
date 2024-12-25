@@ -19,13 +19,14 @@ class Translator(BaseOpenAIProcessor):
         self.base_prompt = (
             "You are a translator. Translate the given text from {src} to {tgt}. "
             "Do not add comments, only return the translated text. "
+            "If text is empty do not comment that. Simply return with an empty string yourself."
             "Make sure that's a high-quality translation, where things aren't just rendered literally, "
             "but the tone, verbosity and style is inferred from the original language and perfectly "
             "adapted into the destination language. "
         )
 
-def output_suffix(self):
-    return f"translated_{self.source_lang}_{self.target_lang}"
+    def output_suffix(self):
+        return f"translated_{self.source_lang}_{self.target_lang}"
 
-def build_prompt(self):
-    return self.base_prompt.format(src=self.source_lang, tgt=self.target_lang)
+    def build_prompt(self):
+        return self.base_prompt.format(src=self.source_lang, tgt=self.target_lang)

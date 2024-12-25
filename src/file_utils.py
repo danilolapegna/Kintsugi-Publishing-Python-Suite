@@ -26,6 +26,8 @@ def find_documents(directory: str, extensions: List[str]) -> List[str]:
     docs = []
     for root, dirs, files in os.walk(directory):
         for f in files:
+            if f.startswith(".") or f.startswith("~"):
+                continue
             if any(f.lower().endswith(ext) for ext in extensions):
                 docs.append(os.path.join(root, f))
     return docs

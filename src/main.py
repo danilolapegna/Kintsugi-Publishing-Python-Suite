@@ -27,9 +27,11 @@ def parse_args():
     parser.add_argument("--processor")
     parser.add_argument("--severity", type=int)
     parser.add_argument("--source-lang")
+    parser.add_argument("--api-key")
     parser.add_argument("--target-lang")
     parser.add_argument("--output-format", choices=["txt","docx"])
     parser.add_argument("--add-section-title")
+
     args = parser.parse_args()
     return args
 
@@ -64,6 +66,12 @@ def main():
     config = ConfigManager(args.config)
     config.override("io.input_directory", args.input_dir)
     config.override("io.output_directory", args.output_dir)
+
+    api_key = args.api_key or config.get("openai.api_key")
+    if not api_key or api_key in ["", "YOUR-OPENAI-API-KEY"]:
+        raise ValueError("Valid API key not found. Provide it via CLI or in the YAML config.")
+    config.override("openai.api_key", api_key)
+
     if args.heading_styles:
         config.override("processing.heading_styles", args.heading_styles)
     if args.prompt:
@@ -107,6 +115,27 @@ def main():
     processor_name = config.get("processing.processor", "Reviewer")
     output_format = config.get("processing.output_format", "txt")
 
+    docx_in_docx_mode = False
+
+    is_docx_input = any(os.path.splitext(doc)[1].lower() == ".docx" for doc in documents)
+    is_pdf_input = any(os.path.splitext(doc)[1].lower() == ".pdf" for doc in documents)
+
+    if output_format == "docx":
+        if is_docx_input:
+            docx_in_docx_mode = True
+            user_confirmation = input(
+                "Both input and output are .docx for some files. Use docx in docx mode for those files?\n"
+                "This will recreate a .docx that's more similar to the original one, but will consume more API tokens (y/n): "
+            )
+            if user_confirmation.strip().lower() != 'y':
+                docx_in_docx_mode = False
+                logging.info("docx_in_docx_mode is disabled by user choice")
+
+        if is_pdf_input:
+            logging.warning(
+                "One of the inputs is .pdf and output is .docx. Just fyi: this will NOT produce a .docx that's formatted as the .pdf"
+            )
+
     processor_parameters = {
         'prompt' : config.get("prompt", ''),
         'additional_prompt' : config.get("additional_prompt", ''),
@@ -125,9 +154,10 @@ def main():
 
     client = OpenAIClient(api_key, model, max_retries)
     processor = ProcessorClass(client, processor_parameters)
+    print(f"Chosen processor class: {processor}")
 
     for doc_path in documents:
-        sections = parser.parse_document(doc_path)
+        sections = parser.parse_document(doc_path, docx_in_docx_mode=docx_in_docx_mode)
         results = processor.process_sections(sections)
         base_name = os.path.splitext(os.path.basename(doc_path))[0]
 
@@ -141,7 +171,10 @@ def main():
                         f.write(r+"\n"+"="*40+"\n")
         else:
             out_file = os.path.join(output_dir, f"{base_name}_{processor.output_suffix()}.docx")
-            processor.generate_docx(doc_path, sections, results, out_file)
+            if docx_in_docx_mode:
+                processor.generate_docx_advanced_mode(doc_path, sections, results, out_file)
+            else:
+                processor.generate_docx(doc_path, sections, results, out_file)
 
 if __name__ == "__main__":
     main()

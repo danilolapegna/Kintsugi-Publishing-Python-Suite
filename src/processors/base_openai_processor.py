@@ -21,6 +21,12 @@ class BaseOpenAIProcessor(BaseProcessor):
     def process_sections(self, sections):
         results = []
         for s in sections:
+            # Skip API call for empty or whitespace-only content
+            if not s["content"].strip():
+                results.append(s["content"])
+                continue
+
+            # Call the API only for non-empty content
             c = self.client.get_completion(f"{self.build_prompt()}. {self.additional_prompt}", s["content"])
             if c:
                 res = self.postprocess(c, s)
