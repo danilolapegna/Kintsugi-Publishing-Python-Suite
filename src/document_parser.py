@@ -105,13 +105,30 @@ class DocumentParser:
     def _parse_docx_by_paragraph(self, file_path):
         document = Document(file_path)
         sections = []
+
+        # Parse main document paragraphs
         for idx, paragraph in enumerate(document.paragraphs):
             sections.append({
-                "id": idx,  # Add unique identifier for each section
+                "id": f"main-{idx}",  # Unique identifier for the main document
                 "title": f"Paragraph {idx+1}",
-                "content": paragraph.text,
+                "content": "".join(run.text for run in paragraph.runs),
                 "style_name": paragraph.style.name if paragraph.style else None
             })
+
+        # Parse headers and footers
+        def parse_section(section, section_type):
+            for idx, paragraph in enumerate(section.paragraphs):
+                sections.append({
+                    "id": f"{section_type}-{idx}",  # Unique identifier for header/footer
+                    "title": f"{section_type.capitalize()} {idx+1}",
+                    "content": "".join(run.text for run in paragraph.runs),
+                    "style_name": paragraph.style.name if paragraph.style else None
+                })
+
+        for section in document.sections:
+            parse_section(section.header, "header")
+            parse_section(section.footer, "footer")
+
         return sections
 
     def _parse_pdf(self, file_path):

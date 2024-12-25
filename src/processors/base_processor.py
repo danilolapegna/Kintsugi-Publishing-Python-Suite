@@ -45,46 +45,36 @@ class BaseProcessor:
         if len(sections) != len(results):
             raise ValueError("Sections and results lengths do not match.")
 
-        for section in sections:
-            rendered_info = results_by_id.get(section["id"])
-            if not rendered_info or not isinstance(rendered_info, dict):
-                continue
+        # Helper function to process a paragraph
+        def process_paragraph(paragraph, content, style_name):
+            # Preserve non-text elements by iterating through runs
+            for run in paragraph.runs:
+                if run.text.strip():  # Modify text runs only
+                    run.text = content if content else run.text
 
-            content = rendered_info.get('content', '').strip()
-            style_name = rendered_info.get('style_name', '').strip()
+            # Apply styles if specified
+            if style_name and style_name in [s.name for s in doc.styles]:
+                paragraph.style = style_name
 
-            # Find the matching paragraph in the document using the section ID
-            for idx, paragraph in enumerate(doc.paragraphs):
-                if idx == section["id"]:
-                    # Save original styles and formatting
-                    original_style = paragraph.style
-                    original_runs = paragraph.runs  # Save all runs to preserve formatting
-                    original_font_name = original_runs[0].font.name if original_runs else None
-                    original_font_size = original_runs[0].font.size if original_runs else None
-                    has_page_break = any(run._element.xpath('.//w:br[@w:type="page"]') for run in original_runs)
+        # Process main document paragraphs
+        for idx, paragraph in enumerate(doc.paragraphs):
+            section_id = f"main-{idx}"
+            rendered_info = results_by_id.get(section_id)
+            if rendered_info:
+                process_paragraph(paragraph, rendered_info.get("content", "").strip(), rendered_info.get("style_name", "").strip())
 
-                    # Replace the text content only
-                    if content:
-                        for run in original_runs:
-                            run.text = ''  
-                        new_run = paragraph.add_run(content)
-                        paragraph.style = style_name if style_name in [s.name for s in doc.styles] else original_style
+        # Process headers and footers
+        for section in doc.sections:
+            def process_section(section_type):
+                paragraphs = getattr(section, section_type).paragraphs
+                for idx, paragraph in enumerate(paragraphs):
+                    section_id = f"{section_type}-{idx}"
+                    rendered_info = results_by_id.get(section_id)
+                    if rendered_info:
+                        process_paragraph(paragraph, rendered_info.get("content", "").strip(), rendered_info.get("style_name", "").strip())
 
-                        # Restore original font settings
-                        if original_font_name:
-                            new_run.font.name = original_font_name
-                        if original_font_size:
-                            new_run.font.size = original_font_size
-                    else:
-                        for run in original_runs:
-                            run.text = ''
-
-                    # Reapply page break if needed
-                    if has_page_break:
-                        run = paragraph.add_run()
-                        run.add_break(WD_BREAK.PAGE)
-
-                    break
+            process_section("header")
+            process_section("footer")
 
         doc.save(output_path)
 
