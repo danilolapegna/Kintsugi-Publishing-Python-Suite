@@ -15,14 +15,13 @@ from docx import Document
 from PyPDF2 import PdfReader
 
 class DocumentParser:
-    def __init__(self, heading_styles, min_word_threshold=2, add_section_title=True):
+    def __init__(self, heading_styles, min_word_threshold=2):
         """
         :param heading_styles: A set or list of style names considered headings in DOCX.
         :param min_word_threshold: Sections below this word count will be merged with the next.
         """
         self.heading_styles = heading_styles
         self.min_word_threshold = min_word_threshold
-        self.add_section_title = add_section_title
 
     def parse_document(self, file_path):
         ext = os.path.splitext(file_path)[1].lower()
@@ -41,10 +40,7 @@ class DocumentParser:
             text = f.read().strip()
         if not text:
             return []
-        if self.add_section_title:
-            return [{"title": "Document", "content": text}]
-        else:
-            return [{"content": text}]
+        return [{"title": "Document", "content": text}]
 
     def _parse_docx(self, file_path):
         """
@@ -83,10 +79,7 @@ class DocumentParser:
                 content += "\n" + "\n".join(next_sec)
                 word_count = len(content.split())
 
-            if self.add_section_title:
-                merged_sections.append({"title": title, "content": content})
-            else:
-                merged_sections.append({"content": content})
+            merged_sections.append({"title": title, "content": content})
             i = j + 1
         return merged_sections
 
@@ -100,8 +93,5 @@ class DocumentParser:
         for i, page in enumerate(reader.pages):
             page_text = page.extract_text()
             # Use "Page X" as title for each PDF page.
-            if self.add_section_title:
-                sections.append({"title": f"PDF Page {i + 1}", "content": page_text or ""})
-            else:
-                sections.append({"content": page_text or ""})
+            sections.append({"title": f"PDF Page {i + 1}", "content": page_text or ""})
         return sections

@@ -97,10 +97,11 @@ def main():
         print(f"No documents found in the input dir {input_dir}")
         return
 
+    add_section_title=config.get("processing.add_section_title", True)
+
     parser = DocumentParser(
         heading_styles=config.get("processing.heading_styles"),
         min_word_threshold=config.get("processing.min_word_threshold", 2)
-        add_section_title=config.get("processing.add_section_title", True)
     )
 
     processor_name = config.get("processing.processor", "Reviewer")
@@ -135,7 +136,8 @@ def main():
                 out_file = os.path.join(output_dir, f"{base_name}_{processor.output_suffix()}.txt")
                 with open(out_file, 'w', encoding='utf-8') as f:
                     for i, r in enumerate(results):
-                        f.write(f"Section {i+1}:\n")
+                        if add_section_title:
+                            f.write(f"Section {i+1}:\n")
                         f.write(r+"\n"+"="*40+"\n")
         else:
             out_file = os.path.join(output_dir, f"{base_name}_{processor.output_suffix()}.docx")
