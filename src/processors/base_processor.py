@@ -45,39 +45,60 @@ class BaseProcessor:
         if len(sections) != len(results):
             raise ValueError("Sections and results lengths do not match.")
 
-        # Helper function to process a paragraph
         def process_paragraph(paragraph, content, style_name):
-            # Preserve non-text elements by iterating through runs
-            for run in paragraph.runs:
-                if run.text.strip():  # Modify text runs only
-                    run.text = content if content else run.text
+            # Save original font settings
+            original_font_name = None
+            original_font_size = None
+            if paragraph.runs:
+                original_font_name = paragraph.runs[0].font.name
+                original_font_size = paragraph.runs[0].font.size
+
+            # Preserve non-text elements by clearing only text in existing runs
+            if content.strip():
+                if len(paragraph.runs) > 0:
+                    paragraph.runs[0].text = content  # Modify the first run only
+                    for run in paragraph.runs[1:]:
+                        run.text = ''  # Clear all other runs
+                else:
+                    paragraph.add_run(content)  # Add content if no runs exist
+
+            # Restore original font settings
+            if paragraph.runs:
+                run = paragraph.runs[0]
+                if original_font_name:
+                    run.font.name = original_font_name
+                if original_font_size:
+                    run.font.size = original_font_size
 
             # Apply styles if specified
-            if style_name and style_name in [s.name for s in doc.styles]:
+            if style_name and style_name in [s.name for s in paragraph.part.styles]:
                 paragraph.style = style_name
+
+        # Track matched paragraphs by their IDs to prevent overwriting
+        matched_ids = set()
 
         # Process main document paragraphs
         for idx, paragraph in enumerate(doc.paragraphs):
             section_id = f"main-{idx}"
             rendered_info = results_by_id.get(section_id)
-            if rendered_info:
+            if rendered_info and section_id not in matched_ids:
                 process_paragraph(paragraph, rendered_info.get("content", "").strip(), rendered_info.get("style_name", "").strip())
+                matched_ids.add(section_id)
 
         # Process headers and footers
         for section in doc.sections:
-            def process_section(section_type):
-                paragraphs = getattr(section, section_type).paragraphs
+            def process_section(paragraphs, section_type):
                 for idx, paragraph in enumerate(paragraphs):
                     section_id = f"{section_type}-{idx}"
                     rendered_info = results_by_id.get(section_id)
-                    if rendered_info:
+                    if rendered_info and section_id not in matched_ids:
                         process_paragraph(paragraph, rendered_info.get("content", "").strip(), rendered_info.get("style_name", "").strip())
+                        matched_ids.add(section_id)
 
-            process_section("header")
-            process_section("footer")
+            process_section(section.header.paragraphs, "header")
+            process_section(section.footer.paragraphs, "footer")
 
         doc.save(output_path)
-
 
     def map_sections(self, sections, results):
         return {section["content"]: result for section, result in zip(sections, results)}
