@@ -15,6 +15,7 @@ from file_utils import find_documents, ensure_directory
 from document_parser import DocumentParser
 from openai_client import OpenAIClient
 from processors import base_processor
+from document_archiver import DocumentArchiver
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -160,22 +161,8 @@ def main():
     for doc_path in documents:
         sections = parser.parse_document(doc_path, docx_in_docx_mode=docx_in_docx_mode)
         results = processor.process_sections(sections)
-        base_name = os.path.splitext(os.path.basename(doc_path))[0]
-
-        if output_format == "txt":
-            if results:
-                out_file = os.path.join(output_dir, f"{base_name}_{processor.output_suffix()}.txt")
-                with open(out_file, 'w', encoding='utf-8') as f:
-                    for i, r in enumerate(results):
-                        if add_section_title:
-                            f.write(f"Section {i+1}:\n")
-                        f.write(r+"\n"+"="*40+"\n")
-        else:
-            out_file = os.path.join(output_dir, f"{base_name}_{processor.output_suffix()}.docx")
-            if docx_in_docx_mode:
-                processor.generate_docx_advanced_mode(doc_path, sections, results, out_file)
-            else:
-                processor.generate_docx(doc_path, sections, results, out_file)
+        archiver = DocumentArchiver(output_dir, output_format, add_section_title, docx_in_docx_mode)
+        archiver.archive_document(doc_path, sections, results, processor)
 
 if __name__ == "__main__":
     main()

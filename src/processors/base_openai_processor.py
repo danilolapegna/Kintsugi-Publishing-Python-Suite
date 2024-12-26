@@ -21,8 +21,8 @@ class BaseOpenAIProcessor(BaseProcessor):
     def process_sections(self, sections):
         results = []
         for s in sections:
-            # Skip API call for empty or whitespace-only content
-            if not s["content"].strip():
+            # Skip API calls and return as-is for content defined by this method (default: empty or all-whitespaces)
+            if do_not_process(s):
                 results.append({"id": s["id"], "content": s["content"]})  # Preserve ID for empty sections
                 continue
 
@@ -33,6 +33,10 @@ class BaseOpenAIProcessor(BaseProcessor):
                 res = {"id": s["id"], "content": c}
                 results.append(res)
         return results
+
+    # Sections matching this criteria will not be sent to OpenAI and just added as-they-are to mapping
+    def do_not_process(section):
+        return not section["content"].strip()
 
     def build_prompt(self):
         return ''

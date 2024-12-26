@@ -40,6 +40,10 @@ class ScientificReviewer(BaseOpenAIProcessor):
             5: "very strict"
         }
         return f"{self.base_prompt}\nDo this scientific check with a severity level that's {sev_map.get(self.severity, 'normal')}"
+    
+    # Let's skip processing for all sections with less than 2 words, as it probably doesn't make sense to science-review them
+    def do_not_process(self, section):
+        return not section["content"].strip() or len(section["content"].split()) < 2
 
     def postprocess(self, response, section):
         if response.lower() == "no factual errors here":

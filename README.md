@@ -19,9 +19,10 @@ This project uses OpenAI’s API for language tasks, supports configurable promp
 - Plugin-based architecture: easily add new functionalities like analytics and such.
 
 ## How this works, in short
-- Take all documents in the input folder
-- Send each of them, one section at a time, to a processor class (usually an OpenAI api client) that will review/translate/summarise it.
-- Save the report for each document in a separate file or embed the results into a new, entirely formatted .docx file (WIP functionality).
+- It will take all documents in the input folder
+- Then will send each of them, one section at a time, to a processor class (usually an OpenAI api client) that will review/translate/summarise it.
+- At the end, it will save the report for each document in a separate file or embed the results into a new, entirely formatted .docx file (WIP functionality).
+- Can be used for batch document processing, document translations, document reviews, summarising and much more!
 
 ## Usage
 
