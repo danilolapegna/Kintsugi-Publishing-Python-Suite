@@ -48,31 +48,26 @@ class DocumentArchiver:
     def _save_as_docx(self, doc_path, sections, results, full_name):
         out_file = os.path.join(self.output_dir, f"{full_name}.docx")
         in_extension = os.path.splitext(os.path.basename(doc_path))[1]
-        if self.docx_in_docx_mode and in_extension == "docx":
-            self._generate_docx_advanced_mode(doc_path, sections, results, out_file)
+        if self.docx_in_docx_mode and in_extension == ".docx":
+            self._generate_docx_from_docx(doc_path, sections, results, out_file)
         else:
-            self._generate_docx(doc_path, sections, results, out_file, in_extension)
-
-    # Output docx for simple mode: just write section-by-section
-    def _generate_docx(self, original_path, sections, results, output_path, in_extension):
-        if in_extension == ".docx":
-            doc = Document(original_path)
-            text_map = self.map_sections(sections, results)
-            for p in doc.paragraphs:
-                original_text = p.text
-                replaced = self.replace_text_in_sections(original_text, text_map)
-                p.text = replaced
-        else:
-            # Create a new document with sections listed in sequence
-            doc = Document()
-            for section in sections:
-                doc.add_heading(section["title"], level=1)
-                doc.add_paragraph(section["content"])
+            self._generate_docx_from_other_format(results, out_file)
+        
+    def _generate_docx_from_other_format(self, results, output_path):
+        doc = Document()
+    
+        for section in results:
+            content = section["content"]
+            paragraphs = [p.strip() for p in content.split("\n\n") if p.strip()]
+        
+        for paragraph in paragraphs:
+            doc.add_paragraph(paragraph)
+    
         doc.save(output_path)
 
-    # Output docx for advanced mode: process a previously mapped set of dictionaries, allowing
+    # Output docx from docx: process a previously mapped set of dictionaries, allowing
     # paragraph-by-paragraph matching between original text and processed one    
-    def _generate_docx_advanced_mode(self, original_path, sections, results, output_path):
+    def _generate_docx_from_docx(self, original_path, sections, results, output_path):
         doc = Document(original_path)
         results_by_id = {r["id"]: r for r in results}  # Create a mapping of results by ID
 
@@ -133,17 +128,3 @@ class DocumentArchiver:
             process_section(section.footer.paragraphs, "footer")
 
         doc.save(output_path)
-
-    def replace_text_in_sections(self, text, text_map):
-        for original, translated in text_map.items():
-            if original.strip() and original in text:
-                text = text.replace(original, translated)
-        return text
-
-    def map_sections(self, sections, results):
-        mapping = {}
-        idx = 0
-        for s in sections:
-            mapping[s["content"]] = results[idx] if idx < len(results) else s["content"]
-            idx += 1
-        return mapping

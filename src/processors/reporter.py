@@ -9,8 +9,6 @@ Reporter class for counting words, most used sentences and other writing utiliti
 """
 
 import re
-import string
-import math
 from collections import Counter
 from .base_processor import BaseProcessor
 

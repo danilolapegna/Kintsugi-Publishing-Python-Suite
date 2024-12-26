@@ -119,22 +119,19 @@ def main():
     # Docx in docx mode: if user approves this, processed text will be saved in a formatted docx
     docx_in_docx_mode = False
 
-    is_docx_input = any(os.path.splitext(doc)[1].lower() == ".docx" for doc in documents)
-    is_pdf_input = any(os.path.splitext(doc)[1].lower() == ".pdf" for doc in documents)
+    has_docx_input = any(os.path.splitext(doc)[1].lower() == ".docx" for doc in documents)
+    has_pdf_input = any(os.path.splitext(doc)[1].lower() == ".pdf" for doc in documents)
 
     if output_format == "docx":
-        if is_docx_input:
-            docx_in_docx_mode = True
-            user_confirmation = input(
-                "Both input and output are .docx for some files. Use docx in docx mode for those files?\n"
-                "If you select 'y' it will recreate a .docx that's more similar to the original one, but will consume more API tokens\n"
-                 "If you select 'n' it will process fewer sections but the .docx will lose its original formatting (y/n):" 
+        if has_docx_input:
+            logging.warning(
+                "You have chosen .docx as output format and some input files are .docx already. "
+                "This will try to recreate a file that's as loyal as possible to the original one, "
+                "and may require time. For simpler outputs, chose txt as output format instead. "
             )
-            if user_confirmation.strip().lower() != 'y':
-                docx_in_docx_mode = False
-                logging.info("docx_in_docx_mode is disabled by user choice")
+            docx_in_docx_mode = True
 
-        if is_pdf_input:
+        if has_pdf_input:
             logging.warning(
                 "One of the inputs is .pdf and output is .docx. Just fyi: this will NOT produce a .docx that's formatted as the .pdf"
             )

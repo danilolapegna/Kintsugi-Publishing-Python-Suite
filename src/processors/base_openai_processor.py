@@ -7,9 +7,6 @@ BaseOpenAIProcessor class provides an OpenAI-dependent framework for processing 
 - Intended to be extended by specific processors like translators or reviewers.
 """
 
-import os
-import copy
-from docx import Document
 from .base_processor import BaseProcessor
 
 class BaseOpenAIProcessor(BaseProcessor):
@@ -46,9 +43,3 @@ class BaseOpenAIProcessor(BaseProcessor):
 
     def output_suffix(self):
         return "ai_processed"
-
-    def replace_text_in_sections(self, text, text_map):
-        for k, v in text_map.items():
-            if k.strip() and k in text:
-                text = text.replace(k, v)
-        return text

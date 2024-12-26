@@ -169,7 +169,7 @@ class DocumentParser:
         """
         Calculates the number of tokens in a given text.
         """
-        encoding = tiktoken.encoding_for_model("gpt-4")
+        encoding = tiktoken.encoding_for_model("gpt-4o")
         return len(encoding.encode(text))
 
     def _smart_split(self, section):
