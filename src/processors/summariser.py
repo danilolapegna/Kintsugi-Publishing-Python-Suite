@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+
+"""
+Summariser
+
+A class that extends `BaseOpenAIProcessor` to provide functionality for summarising 
+text using an OpenAI client. This processor is tailored for generating concise 
+summaries while maintaining accuracy and clarity, with support for multilingual input.
+"""
+
 from .base_openai_processor import BaseOpenAIProcessor
 
 class Summariser(BaseOpenAIProcessor):

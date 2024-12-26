@@ -10,7 +10,6 @@ ScientificReviewer class for identifying factual and scientific errors in text u
 
 Needs to be augmented via additional, professional research and checks on sites
 like scite.ai or Pubmed.
-
 """
 
 from .base_openai_processor import BaseOpenAIProcessor

@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+
+"""
+DocumentArchiver
+
+A class for processing and archiving documents into specified formats (TXT or DOCX).
+It provides support for adding section titles, preserving original formatting, and 
+advanced DOCX generation for DOCX inputs.
+"""
+
 import os
 from docx import Document
 from docx.enum.text import WD_BREAK

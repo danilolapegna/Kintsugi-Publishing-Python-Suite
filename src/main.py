@@ -14,7 +14,6 @@ from config_manager import ConfigManager
 from file_utils import find_documents, ensure_directory
 from document_parser import DocumentParser
 from openai_client import OpenAIClient
-from processors import base_processor
 from document_archiver import DocumentArchiver
 
 def parse_args():

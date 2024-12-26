@@ -10,7 +10,6 @@ Utility functions for file and directory operations.
 """
 
 import os
-import logging
 from typing import List
 
 def ensure_directory(path: str):
