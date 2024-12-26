@@ -38,7 +38,7 @@ class BaseOpenAIProcessor(BaseProcessor):
         return results
 
     # Sections matching this criteria will not be sent to OpenAI and just added as-they-are to mapping
-    def do_not_process(section):
+    def do_not_process(self, section):
         return not section["content"].strip()
 
     def build_prompt(self):
