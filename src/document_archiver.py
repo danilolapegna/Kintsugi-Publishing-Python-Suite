@@ -31,8 +31,10 @@ class DocumentArchiver:
 
         if self.output_format == "txt":
             self._save_as_txt(full_name, results)
-        else:
+        elif self.output_format == "docx":
             self._save_as_docx(doc_path, sections, results, full_name)
+        else:
+            raise ValueError(f"Unrecognised output format: {self.output_format}")
 
     def _save_as_txt(self, full_name, results):
         if results:
@@ -45,12 +47,11 @@ class DocumentArchiver:
 
     def _save_as_docx(self, doc_path, sections, results, full_name):
         out_file = os.path.join(self.output_dir, f"{full_name}.docx")
-        if self.docx_in_docx_mode:
+        if self.docx_in_docx_mode and self.output_format == "docx":
             self._generate_docx_advanced_mode(doc_path, sections, results, out_file)
         else:
             self._generate_docx(doc_path, sections, results, out_file)
 
-    
     # Output docx for simple mode: just write section-by-section
     def _generate_docx(self, original_path, sections, results, output_path):
         doc = Document(original_path)

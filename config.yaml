@@ -24,7 +24,7 @@ processing:
 io:
   input_directory: "./input_docs"
   output_directory: "./outputs"
-  supported_extensions: [".docx", ".txt", ".md"]
+  supported_extensions: [".docx", ".txt", ".md", ".pdf"]
 
 logging:
-  level: "DEBUG"
+  level: "INFO"

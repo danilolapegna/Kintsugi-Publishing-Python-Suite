@@ -19,18 +19,22 @@ class BaseOpenAIProcessor(BaseProcessor):
         
     def process_sections(self, sections):
         results = []
+        idx = 0
         for s in sections:
+            section_id = s.get("id", idx)
+
             # Skip API calls and return as-is for content defined by this method (default: empty or all-whitespaces)
             if self.do_not_process(s):
-                results.append({"id": s["id"], "content": s["content"]})  # Preserve ID for empty sections
+                results.append({"id": section_id, "content": s["content"]})  # Preserve ID for empty sections
                 continue
 
-            # Call the API only for non-empty content
+            # Else call the API only for content that passes the check
             c = self.client.get_completion(f"{self.build_prompt()}. {self.additional_prompt}", s["content"])
             if c:
                 # Wrap the result in a dictionary with the necessary keys
-                res = {"id": s["id"], "content": c}
+                res = {"id": section_id, "content": c}
                 results.append(res)
+        idx+=1
         return results
 
     # Sections matching this criteria will not be sent to OpenAI and just added as-they-are to mapping

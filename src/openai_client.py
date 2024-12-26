@@ -14,7 +14,7 @@ import logging
 class OpenAIClient:
     def __init__(self, api_key, model, max_retries=3):
         if api_key == "YOUR-OPENAI-API-KEY" or api_key == "":
-            raise AttributeError("You need to define an OpenAI api key")
+            raise ValueError("You need to define an OpenAI api key")
         
         openai.api_key = api_key
         self.client = openai

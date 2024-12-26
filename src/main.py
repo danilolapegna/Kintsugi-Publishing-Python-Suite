@@ -99,7 +99,7 @@ def main():
     output_dir = config.get("io.output_directory")
 
     ensure_directory(output_dir)
-    supported_ext = config.get("io.supported_extensions", [".docx"])
+    supported_ext = config.get("io.supported_extensions", [".docx", ".txt", ".md", ".pdf"])
 
     documents = find_documents(input_dir, supported_ext)
     if not documents:
@@ -161,6 +161,7 @@ def main():
     print(f"Chosen processor class: {processor}")
 
     for doc_path in documents:
+        print(f"Processing {doc_path}")
         sections = parser.parse_document(doc_path, docx_in_docx_mode=docx_in_docx_mode)
         results = processor.process_sections(sections)
         archiver = DocumentArchiver(output_dir, output_format, add_section_title, docx_in_docx_mode)
