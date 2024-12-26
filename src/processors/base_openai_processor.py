@@ -4,7 +4,6 @@
 BaseOpenAIProcessor class provides an OpenAI-dependent framework for processing document sections.
 
 - Specific BaseProcessor, designed to handle OpenAI client interactions with custom prompts.
-- Supports postprocessing of API responses and mapping results back to original content.
 - Intended to be extended by specific processors like translators or reviewers.
 """
 
@@ -22,7 +21,7 @@ class BaseOpenAIProcessor(BaseProcessor):
         results = []
         for s in sections:
             # Skip API calls and return as-is for content defined by this method (default: empty or all-whitespaces)
-            if do_not_process(s):
+            if self.do_not_process(s):
                 results.append({"id": s["id"], "content": s["content"]})  # Preserve ID for empty sections
                 continue
 
@@ -40,9 +39,6 @@ class BaseOpenAIProcessor(BaseProcessor):
 
     def build_prompt(self):
         return ''
-
-    def postprocess(self, response, section):
-        return response
 
     def output_suffix(self):
         return "ai_processed"

@@ -172,6 +172,3 @@ class Reporter(BaseProcessor):
     def _get_bigrams(self, words):
         # Return list of (word1, word2) bigrams
         return list(zip(words, words[1:]))
-
-    def postprocess(self, response, section):
-        return response

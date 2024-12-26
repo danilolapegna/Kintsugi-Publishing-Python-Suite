@@ -16,13 +16,25 @@ class GrammarReviewer(BaseOpenAIProcessor):
     def __init__(self, client, processor_parameters):
         super().__init__(client, processor_parameters)
         self.severity = min(max(processor_parameters.get('severity', 3), 1), 5)
+        self.docx_in_docx_mode = processor_parameters.get('docx_in_docx_mode', False)
+        
+        # docx_in_docx_mode: produce a new, reviewed version of the docx
+        # normal mode: generate a REPORT instead, with a list of what to review and what not
+        mode_prompts = {
+            True: (
+                ", return with a fully fixed version of the text, without additional comments. "
+                "If you find no errors, return with the original, unprocessed version of the text."
+            ),
+            False: (
+                ", list them and provide suggestions on how to fix each of them. "
+                "If you find no errors, return: NO SERIOUS ERRORS HERE."
+            ),
+        }
 
         self.base_prompt = (
             "You are a reviewer. You will receive text. If any grammatical errors, typos, or inconsistencies "
-            "are present, list them and provide suggestions on how to fix each of them. "
-            "Your response should be in the same language as the input text. "
-            "If you find no errors, return: NO SERIOUS ERRORS HERE."
-    )
+            f"are present{mode_prompts[self.docx_in_docx_mode]}. Your response should always be in the same language as the input text. "
+        )
         
     def output_suffix(self):
         return "reviewed"
@@ -36,8 +48,3 @@ class GrammarReviewer(BaseOpenAIProcessor):
             5: "very strict"
         }
         return f"{self.base_prompt}\nDo it with a severity level that's {sev_map.get(self.severity, 'normal')}"
-
-    def postprocess(self, response, section):
-        if response.lower() == "no serious errors here":
-            return None
-        return response

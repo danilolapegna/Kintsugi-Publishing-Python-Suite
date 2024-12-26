@@ -116,6 +116,7 @@ def main():
     processor_name = config.get("processing.processor", "Reviewer")
     output_format = config.get("processing.output_format", "txt")
 
+    # Docx in docx mode: if user approves this, processed text will be saved in a formatted docx
     docx_in_docx_mode = False
 
     is_docx_input = any(os.path.splitext(doc)[1].lower() == ".docx" for doc in documents)
@@ -143,7 +144,8 @@ def main():
         'additional_prompt' : config.get("additional_prompt", ''),
         'severity' : config.get("processing.severity", 3),
         'source_lang' : config.get("processing.source_lang", "en"),
-        'target_lang' : config.get("processing.target_lang", "en")
+        'target_lang' : config.get("processing.target_lang", "en"),
+        'docx_in_docx_mode' : docx_in_docx_mode
     }
 
     api_key = config.get("openai.api_key")

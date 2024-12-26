@@ -16,9 +16,5 @@ class BaseProcessor:
     def process_sections(self, sections):
         return sections
 
-    # Override this to declare section postprocessing logic
-    def postprocess(self, response, section):
-        return response
-
     def output_suffix(self):
         return "processed"
