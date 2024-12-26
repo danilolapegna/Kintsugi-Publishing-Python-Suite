@@ -39,6 +39,11 @@ db.sqlite3-journal
 # Jupyter Notebook
 .ipynb_checkpoints/
 
+# Documents
+*.pages
+*.docx
+*.pdf
+
 # VSCode settings
 .vscode/
 

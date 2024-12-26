@@ -158,7 +158,7 @@ def main():
 
     client = OpenAIClient(api_key, model, max_retries)
     processor = ProcessorClass(client, processor_parameters)
-    print(f"Chosen processor class: {processor}")
+    print(f"Chosen processor class: {processor.__class__.__name__}")
 
     for doc_path in documents:
         print(f"Processing {doc_path}")

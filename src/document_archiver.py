@@ -47,19 +47,27 @@ class DocumentArchiver:
 
     def _save_as_docx(self, doc_path, sections, results, full_name):
         out_file = os.path.join(self.output_dir, f"{full_name}.docx")
-        if self.docx_in_docx_mode and self.output_format == "docx":
+        in_extension = os.path.splitext(os.path.basename(doc_path))[1]
+        if self.docx_in_docx_mode and in_extension == "docx":
             self._generate_docx_advanced_mode(doc_path, sections, results, out_file)
         else:
-            self._generate_docx(doc_path, sections, results, out_file)
+            self._generate_docx(doc_path, sections, results, out_file, in_extension)
 
     # Output docx for simple mode: just write section-by-section
-    def _generate_docx(self, original_path, sections, results, output_path):
-        doc = Document(original_path)
-        text_map = self.map_sections(sections, results)
-        for p in doc.paragraphs:
-            original_text = p.text
-            replaced = self.replace_text_in_sections(original_text, text_map)
-            p.text = replaced
+    def _generate_docx(self, original_path, sections, results, output_path, in_extension):
+        if in_extension == ".docx":
+            doc = Document(original_path)
+            text_map = self.map_sections(sections, results)
+            for p in doc.paragraphs:
+                original_text = p.text
+                replaced = self.replace_text_in_sections(original_text, text_map)
+                p.text = replaced
+        else:
+            # Create a new document with sections listed in sequence
+            doc = Document()
+            for section in sections:
+                doc.add_heading(section["title"], level=1)
+                doc.add_paragraph(section["content"])
         doc.save(output_path)
 
     # Output docx for advanced mode: process a previously mapped set of dictionaries, allowing
